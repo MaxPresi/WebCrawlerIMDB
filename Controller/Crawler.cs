@@ -4,16 +4,24 @@ using WebCrawlerIMDB.Model;
 using Serilog;
 using System.Text;
 using ServiceStack.Text;
+using System.IO;
 
 namespace WebCrawlerIMDB.Controller
 {
-    internal class Crawler
+    public class Crawler
     {
+        BrowserDriver wb = new BrowserDriver();
 
-        public void WebCrawler()
+        /// <summary>
+        /// Método que extrai os dados dos 20 filmes mais bem avaliados da lista especificada no link.
+        /// </summary>
+        /// <param name="link"></param>
+        public void WebCrawler(string link)  
         {
             // Lista com os itens que serão extraídos de cada filme. Especificado na classe MovieItems.cs em Models.
             var movieItems = new List<MovieItems>();
+
+            WebDriver driver = wb.GetDriver();
 
             var header = new MovieItems
             {
@@ -26,6 +34,7 @@ namespace WebCrawlerIMDB.Controller
             movieItems.Add(header);
 
             // Verifica se o arquivo csv que será criado está aberto
+            Log.Debug("Verificando se o arquivo está aberto CSV.");
             var fi1 = new FileInfo(@"IMDB.csv");
             while (Aberto(fi1) == true)
             {
@@ -34,34 +43,28 @@ namespace WebCrawlerIMDB.Controller
                 while (Console.ReadKey().Key != ConsoleKey.Enter) { }
             }
 
-            Log.Debug("Configurando Chrome WebDriver");
+            // Especfifica a página que será usada. O método retorna o link dependendo se um usuário foi especificado ou não.
+            Log.Debug("Carregando página {0}", link);
+            driver.Navigate().GoToUrl(link);
+            Log.Information("Página carregada!");
 
-            // Passa argumentos para execução do Chrome
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArguments(@"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36\"); //Especifica o user agent, foi necessário pois em headless mode estava dando erro 403
-            chromeOptions.AddArguments("--headless=new");
-            chromeOptions.AddArguments("--ignore-certificate-errors");
-            chromeOptions.AddArguments("--ignore-ssl-errors");
-            Log.Information("Executando Chrome WebDriver com os Argumentos: \n {0}", chromeOptions.Arguments);
-
-            IWebDriver driver = new ChromeDriver(chromeOptions);
-            Log.Debug("WebDriver criado com sucesso");
-
-            Log.Debug("Carregando página...");
-            // Especfifica a página que será usada.
-            // Não vi necessidade de implementar waiters já que os dados não vêm de elementos dinamicos.
-            driver.Navigate().GoToUrl("https://www.imdb.com/chart/top/?ref_=nv_mv_250");
-            Log.Debug("Página carregada!");
+            if (link.Contains("user") || !wb.ElementAre(By.ClassName("ipc-title__text")))
+            {
+                Log.Error("Usuário sem avaliaçoes. Favor selecionar outro usuário.");
+                return;
+            }
 
             // Procura e clica no botão que altera a lista para uma visão detalhada, mostrando mais informações sem precisar abrir o link de cada filme
             driver.FindElement(By.Id("list-view-option-detailed")).Click();
-            Log.Debug("Exibição alterada para lista detalhada.");            
-            
+            Log.Debug("Exibição alterada para lista detalhada.");
+
             // Filtro feito pela classe dos itens presentes na lista requerida
             var movieElements = driver.FindElements(By.ClassName("ipc-metadata-list-summary-item"));
-            Log.Information("Seleção por Casse efetuada. Total de Itens: {0}", movieElements.Count);
+            Log.Information("Seleção por Classe efetuada. Total de Itens: {0}", movieElements.Count);
 
             // Aqui limitei a lista em 20, conforme exigido
+            
+
             foreach (var movieElement in movieElements.Take(20))
             {
                 // Filtros feitos pelas classes de cada item
@@ -87,13 +90,11 @@ namespace WebCrawlerIMDB.Controller
                     ReviewsStars = reviewstar,
                     ReviewsCount = reviewcount
                 };
-                Log.Information($"Filme: {movieItem.Title}, Ano: {movieItem.Year}, Diretor: {movieItem.Director}, Nota: {movieItem.ReviewsStars}/10, Avaliações: {movieItem.ReviewsCount}");
+                Log.Debug($"Filme: {movieItem.Title}, Ano: {movieItem.Year}, Diretor: {movieItem.Director}, Nota: {movieItem.ReviewsStars}/10, Avaliações: {movieItem.ReviewsCount}");
                 movieItems.Add(movieItem);
             }
 
-            
-            Log.Debug("Fechando WebDriver.");
-            driver.Quit(); // Fechar o WebDriver
+            wb.StopDriver();           
 
             // Criação do CSV
             Log.Information("Criando CSV");
@@ -104,6 +105,10 @@ namespace WebCrawlerIMDB.Controller
             
             File.WriteAllText("IMDB.csv", csv.ToString(), Encoding.UTF8); //cria o arquivo csv
             Log.Information("CSV salvo com sucesso");
+
+            Log.Information("Tarefa completada com sucesso!");
+            Log.CloseAndFlush();
+            Environment.Exit(0);
         }
 
         /// <summary>
