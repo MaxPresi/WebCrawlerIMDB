@@ -1,6 +1,21 @@
 # WebCrawlerIMDB
 
-Aplicação WebCrawler criada para extrair dados específicos dos 20 melhores filmes seguindo a lista pública do IMDB e salva em um CSV
+Aplicação WebCrawler criada para extrair dados específicos dos 20 melhores filmes avaliados pelo usuário ou da lista pública do IMDB e salva em um CSV
+
+## Funcionalidade
+### O programa pode funcionar de duas formas:
+1. Lista Pública do IMDB  
+	Uma lista dos 20 melhores filmes da lista geral do IMDB.  
+	Esse resultado pode ser alcançado de duas formas:  
+	- Ao abrir o programa, deixar o usuário em branco e apertar enter (como explicado na tela);  
+	- Usando `-a` com parametro ao executar o software;  
+
+2. Lita do Usuário  
+	Essa lista pega até os 20 filmes mais bem avaliados do usuário.  
+	Para chegar nesse resultado também existe duas formas:  
+	- Preenchendo o Email do usuário e a Senha corretamente conform requisitado no programa.  
+	- Usando os parametros `-u <email> -s <senha>`  
+
 
 ### Os dados específicos são:
 1. Titulo do Filme
@@ -8,12 +23,15 @@ Aplicação WebCrawler criada para extrair dados específicos dos 20 melhores fi
 3. Diretor Principal do FIlme
 4. Avaliaçã Média do Público
 5. Número Estimado de Avaliaçõs que o Filme Possui
+1. 
 
-Para executar o programa, basta baixar e compilar a solução, ou baixar a última versão.
+Para executar o programa, basta baixar e compilar o projeto, ou baixar a última versão.
 
+ 
 ## Argumentos
-O programa aceita argumentos para especificar configurações de log.
+O programa aceita argumentos para agilizar o recebimento dos resultados
 
+###Logs
 - Mudar o nível mínimo de registro
   Usando `-l` mais um numero entre `0` e `3` você pode definir o nível mínimo do log. O nível minimo padrão é Error  
   0 = Debug  
@@ -27,8 +45,16 @@ Usando `-f` será criado um arquivo log.txt no mesmo diretório onde o programa 
 ex.: 
 > WebCrawlerIMDB.exe -l 0  
 > WebCrawlerIMDB.exe -f   
-> WebCrawlerIMDB.exe -l 1 -f
+> WebCrawlerIMDB.exe -l 1 -f  
 
+
+### Seleção de Lista
+- Especificar como Lista Pública.  
+Usando `-a` você especifica a lista como Lista Pública, pulando a interação inicial.  
+
+- Especificar como Lista de Usuário
+Aqui é necessário usar  `-u` e `-p` para especificar, respectivamente, Email e senha do usuário.  
+Os dois devem ser preenchidos corretamente e obrigatóriamente
 
 ## Sobre  
 O software foi feito usando alguns pacotes disponíveis na internet. Sendo eles:
