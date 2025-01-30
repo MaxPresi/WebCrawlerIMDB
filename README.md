@@ -56,6 +56,12 @@ Usando `-a` você especifica a lista como Lista Pública, pulando a interação 
 Aqui é necessário usar  `-u` e `-p` para especificar, respectivamente, Email e senha do usuário.  
 Os dois devem ser preenchidos corretamente e obrigatóriamente
 
+ex.: 
+> WebCrawlerIMDB.exe -a  
+> WebCrawlerIMDB.exe -u teste@exemplo.com -p Sup&rSenh@123   
+> WebCrawlerIMDB.exe -a -l 1 -f 
+> WebCrawlerIMDB.exe -u teste@exemplo.com -p Sup&rSenh@123 -l 0
+ 
 ## Sobre  
 O software foi feito usando alguns pacotes disponíveis na internet. Sendo eles:
 - Serilog: Biblioteca para Log de Informações
