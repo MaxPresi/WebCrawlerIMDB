@@ -19,7 +19,7 @@ namespace WebCrawlerIMDB
 
             // Cria um switch para alterar o nível do log de acordo com argumentos passados na execução. Por padrão o nível é Error
             var levelSwitch = new LoggingLevelSwitch();
-            levelSwitch.MinimumLevel = LogEventLevel.Debug;
+            levelSwitch.MinimumLevel = LogEventLevel.Error;
 
             #region Argumentos
             // Verifica se o argumento "-l" foi passado e define o próximo arumento como nível de log.
