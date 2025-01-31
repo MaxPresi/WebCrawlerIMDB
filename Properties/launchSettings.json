@@ -2,7 +2,7 @@
   "profiles": {
     "WebCrawlerIMDB": {
       "commandName": "Project",
-      "commandLineArgs": "-u wcimdbtest@gmail.com -p \"D@taL@wy&r#2025\""
+      "commandLineArgs": "-u wcimdbtest@gmail.com"
     }
   }
 }

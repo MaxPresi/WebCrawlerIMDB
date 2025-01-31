@@ -67,54 +67,38 @@ namespace WebCrawlerIMDB
             // Sem pedir usuário e senha
             if (args.Contains("-a")) pub = true;
 
-            //int uPos = Array.IndexOf(args, "-u");
+            // Se o parametro "-u" e "-p" for especificado, ele irá logar automaticamente no usuário inserido.
+            // Uma verificação é feita se um email correto foi inserido e se uma senha foi especificada
             if (Array.IndexOf(args, "-u") is int uPos && uPos > -1)
             {
                 try
                 {
-                    string email = args[uPos+1].Replace("\"", "");
-                    if (new EmailAddressAttribute().IsValid(email))
-                    {
-                        user = email;
-
-                        if (Array.IndexOf(args, "-p") is int pPos && pPos > -1)
-                        {
-                            
-                            try 
-                            {
-                                pwd = args[pPos+1].Substring(1, args[pPos + 1].Length - 2);
-                            }
-                            catch (IndexOutOfRangeException)
-                            {
-                                Log.Error("O argumento \"-p\" foi inserido mas nenhuma senha foi especificada." +
-                                    "\nFavor especificar um usuário e senha válidos ou remova o parametro" +
-                                    "\nPara mais informações, busque a documentação");
-                                Environment.Exit(0);
-                            }
-                        }
-                        else
-                        {
-                            Log.Error("O argumento \"-p\" não especificado, senha necessária." +
-                                    "\nFavor especificar um usuário e senha válidos ou remova o parametro" +
-                                    "\nPara mais informações, busque a documentação");
-                            Environment.Exit(0);
-                        }
-
-                    }
-                    else
+                    user = args[uPos + 1].Replace("\"", "");
+                    if (!new EmailAddressAttribute().IsValid(user))
                     {
                         Log.Error("ERRO:\"{0}\" não é um email válido. Favor inserir um e-mail válido" +
                         "\nFavor especificar um usuário e senha válidos ou remova o parametro" +
-                        "\nPara mais informações, busque a documentação", email);
+                        "\nPara mais informações, busque a documentação", user);
                         Environment.Exit(0);
                     }
+                    int pPos = Array.IndexOf(args, "-p");
+                    if (pPos < 0) throw new Exception("Não foi especificado \"-p\" e uma senha. " +
+                        "\nFavor inserir um usuário e senha válidos ou remova o parametro" +
+                        "\nPara mais informações, busque a documentação");
+
+                    pwd = args[pPos + 1].Substring(1, args[pPos + 1].Length - 2);
 
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    Log.Error("O argumento \"-u\" foi inserido mas nenhum valor foi especificado." +
-                        "\nFavor especificar um usuário e senha válidos ou remova o parametro" +
+                    Log.Error("Usuário e/ou senha não foram especificados." +
+                        "\nFavor inserir um usuário e senha válidos ou remova o parametro" +
                         "\nPara mais informações, busque a documentação");
+                    Environment.Exit(0);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e.Message);
                     Environment.Exit(0);
                 }
             }
