@@ -1,6 +1,7 @@
 # WebCrawlerIMDB
 
 Aplicação WebCrawler criada para extrair dados específicos dos 20 melhores filmes avaliados pelo usuário ou da lista pública do IMDB e salva em um CSV
+Compativel com Windows e Linux.
 
 ## Funcionalidade
 ### O programa pode funcionar de duas formas:
@@ -23,9 +24,17 @@ Aplicação WebCrawler criada para extrair dados específicos dos 20 melhores fi
 3. Diretor Principal do FIlme
 4. Avaliaçã Média do Público
 5. Número Estimado de Avaliaçõs que o Filme Possui
-1. 
+ 
 
-Para executar o programa, basta baixar e compilar o projeto, ou baixar a última versão.
+## Executando
+1. Baixa a última versão disponível.  
+
+2. Compile você mesmo
+   - Clone o repositório ou baixe o zip.
+   - Instale o [.Net8](https://dotnet.microsoft.com/pt-br/download/dotnet/8.0)
+   - Compile usando a IDE compatível de sua preferencia ou pelo terminal usando `dotnet build WebCrawlerIMDB.csproj`
+
+### É necessário ter o Chrome instalado no sistema
 
  
 ## Argumentos
