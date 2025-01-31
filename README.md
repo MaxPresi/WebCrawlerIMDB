@@ -59,7 +59,7 @@ Os dois devem ser preenchidos corretamente e obrigatóriamente
 ex.: 
 > WebCrawlerIMDB.exe -a  
 > WebCrawlerIMDB.exe -u teste@exemplo.com -p Sup&rSenh@123   
-> WebCrawlerIMDB.exe -a -l 1 -f 
+> WebCrawlerIMDB.exe -a -l 1 -f  
 > WebCrawlerIMDB.exe -u teste@exemplo.com -p Sup&rSenh@123 -l 0
  
 ## Sobre  
