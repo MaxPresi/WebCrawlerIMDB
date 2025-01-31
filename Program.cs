@@ -28,8 +28,9 @@ namespace WebCrawlerIMDB
             if (Array.IndexOf(args, "-l") is int lPos && lPos > -1)
             {
                 try
-                { 
-                    switch (args[lPos++])
+                {
+                    string lvl = args[lPos + 1].Replace("\"", "");
+                    switch (lvl)
                     {
                         case "0": levelSwitch.MinimumLevel = LogEventLevel.Debug; break;
                         case "1": levelSwitch.MinimumLevel = LogEventLevel.Information; break;
@@ -81,7 +82,7 @@ namespace WebCrawlerIMDB
                             
                             try 
                             {
-                                pwd = args[pPos+1].Replace("\"", "");
+                                pwd = args[pPos+1].Substring(1, args[pPos + 1].Length - 2);
                             }
                             catch (IndexOutOfRangeException)
                             {

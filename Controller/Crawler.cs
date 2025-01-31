@@ -48,8 +48,8 @@ namespace WebCrawlerIMDB.Controller
 
             if (link.Contains("user") && !wb.ElementAre(By.ClassName("ipc-title__text")))
             {
-                Log.Error("Usuário sem avaliaçoes. Favor selecionar outro usuário.");
-                
+                driver.Quit();
+                throw new Exception("Usuário sem avaliaçoes. Favor selecionar outro usuário.");
             }
 
             // Procura e clica no botão que altera a lista para uma visão detalhada, mostrando mais informações sem precisar abrir o link de cada filme            
@@ -93,8 +93,7 @@ namespace WebCrawlerIMDB.Controller
                 movieItems.Add(movieItem);
             }
 
-            wb.StopDriver();           
-
+            driver.Quit();
             // Criação do CSV
             Log.Information("Criando CSV");
             CsvConfig.ItemSeperatorString = ";"; // troca o seperador para evitar confusão com as reviews

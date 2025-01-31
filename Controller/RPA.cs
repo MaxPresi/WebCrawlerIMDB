@@ -69,9 +69,14 @@ namespace WebCrawlerIMDB.Controller
                 } while (!sucess);
             }
 
-            else AutoLogin(user, pwd);
+            else sucess = AutoLogin(user, pwd);
 
-            wc.WebCrawler("https://www.imdb.com/list/ratings/?ref_=nv_usr_rt_4");
+            if (sucess) wc.WebCrawler("https://www.imdb.com/list/ratings/?ref_=nv_usr_rt_4");
+            else
+            {
+                driver.Quit();
+                throw new Exception("Erro ao tentar logar.");
+            }
         }
 
         /// <summary>
@@ -116,7 +121,11 @@ namespace WebCrawlerIMDB.Controller
                     } while (response != ConsoleKey.S && response != ConsoleKey.Y && response != ConsoleKey.N);
 
                     if (response == ConsoleKey.S || response == ConsoleKey.Y) return false;
-                    else Environment.Exit(0);
+                    else
+                    {
+                        driver.Quit();
+                        throw new Exception("Cancelado pelo usuário.");                        
+                    }
                 }
 
                 // Verifica se o o menu de usuário existe, existindo, é um ótimo sinal que o login foi feito :)
