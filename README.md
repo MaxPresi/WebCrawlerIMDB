@@ -27,7 +27,7 @@ Compativel com Windows e Linux.
  
 
 ## Executando
-1. Baixa a última versão disponível.  
+1. [Baixe a última versão disponível](https://github.com/MaxPresi/WebCrawlerIMDB/releases).  
 
 2. Compile você mesmo
    - Clone o repositório ou baixe o zip.
