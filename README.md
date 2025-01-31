@@ -31,7 +31,7 @@ Para executar o programa, basta baixar e compilar o projeto, ou baixar a última
 ## Argumentos
 O programa aceita argumentos para agilizar o recebimento dos resultados
 
-###Logs
+### Logs
 - Mudar o nível mínimo de registro
   Usando `-l` mais um numero entre `0` e `3` você pode definir o nível mínimo do log. O nível minimo padrão é Error  
   0 = Debug  
@@ -59,7 +59,7 @@ Os dois devem ser preenchidos corretamente e obrigatóriamente
 ex.: 
 > WebCrawlerIMDB.exe -a  
 > WebCrawlerIMDB.exe -u teste@exemplo.com -p Sup&rSenh@123   
-> WebCrawlerIMDB.exe -a -l 1 -f 
+> WebCrawlerIMDB.exe -a -l 1 -f  
 > WebCrawlerIMDB.exe -u teste@exemplo.com -p Sup&rSenh@123 -l 0
  
 ## Sobre  
