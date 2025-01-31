@@ -8,6 +8,7 @@
     <UseWindowsForms>False</UseWindowsForms>
     <UseWPF>False</UseWPF>
     <StartupObject>WebCrawlerIMDB.Program</StartupObject>
+	<Version>1.1.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
