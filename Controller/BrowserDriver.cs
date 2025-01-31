@@ -7,13 +7,13 @@ namespace WebCrawlerIMDB.Controller
     
     public class BrowserDriver
     {
-        public WebDriver driver;
+        private static IWebDriver driver;
 
         /// <summary>
         /// Inicia o Chrome WebDrive com os argumentos definidos
         /// </summary>
         /// <returns></returns>
-        public WebDriver GetDriver()
+        public static IWebDriver GetDriver()
         {
             if (driver == null)
             {
@@ -30,7 +30,6 @@ namespace WebCrawlerIMDB.Controller
 
                 driver = new ChromeDriver(chromeOptions);
                 Log.Debug("WebDriver criado com sucesso");
-                return driver;
             }
             return driver;
         }

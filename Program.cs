@@ -71,13 +71,18 @@ namespace WebCrawlerIMDB
             {
                 try
                 {
-                    if (new EmailAddressAttribute().IsValid(args[uPos++]))
+                    string email = args[uPos+1].Replace("\"", "");
+                    if (new EmailAddressAttribute().IsValid(email))
                     {
-                        user = args[uPos++];
+                        user = email;
 
                         if (Array.IndexOf(args, "-p") is int pPos && pPos > -1)
                         {
-                            try { pwd = args[pPos++]; }
+                            
+                            try 
+                            {
+                                pwd = args[pPos+1].Replace("\"", "");
+                            }
                             catch (IndexOutOfRangeException)
                             {
                                 Log.Error("O argumento \"-p\" foi inserido mas nenhuma senha foi especificada." +
@@ -97,9 +102,9 @@ namespace WebCrawlerIMDB
                     }
                     else
                     {
-                        Log.Error("ERRO: E-mail invalido. Favor inserir um e-mail válido" +
+                        Log.Error("ERRO:\"{0}\" não é um email válido. Favor inserir um e-mail válido" +
                         "\nFavor especificar um usuário e senha válidos ou remova o parametro" +
-                        "\nPara mais informações, busque a documentação");
+                        "\nPara mais informações, busque a documentação", email);
                         Environment.Exit(0);
                     }
 

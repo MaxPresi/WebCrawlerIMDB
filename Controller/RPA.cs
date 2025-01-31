@@ -3,12 +3,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security;
 using System.Text;
-using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 
 namespace WebCrawlerIMDB.Controller
 {
@@ -16,7 +11,7 @@ namespace WebCrawlerIMDB.Controller
     {
         BrowserDriver wb = new BrowserDriver();        
         Crawler wc = new Crawler();
-        
+        private IWebDriver driver;
         /// <summary>
         /// Método que automatiza o login com os parametros fornecidos.
         /// Depois passa o link para o Crawler para extração dos dados
@@ -28,6 +23,7 @@ namespace WebCrawlerIMDB.Controller
             bool sucess = false;
             bool usuario = false;
             bool senha = false;
+
             // Verifica se algum usuário foi passado via parametros ao executar
             // Caso não, pede para o usuário especificar o email e senha, ou se deseja usar a Lista Geral Públic do IMDB
             Console.WriteLine("\n" + @"==//== IMDB WebCrawler ==\\==" + "\n");
@@ -40,7 +36,12 @@ namespace WebCrawlerIMDB.Controller
                         Console.WriteLine("\nDigite o Email de Usuário e aperte Enter\n(Ou deixe vazio para usar a Lista Geral):");
                         user = Console.ReadLine();
 
-                        if (user != null && new EmailAddressAttribute().IsValid(user))
+                        if (user == string.Empty)
+                        {
+                            wc.WebCrawler("https://www.imdb.com/chart/top/?ref_=nv_mv_250");
+                            return;
+                        }
+                        if (user != string.Empty && new EmailAddressAttribute().IsValid(user))
                         {
                             usuario = true;
 
@@ -49,18 +50,13 @@ namespace WebCrawlerIMDB.Controller
                                 Console.WriteLine("\n\nDigite a Senha do Usuário:");
                                 pwd = Password();
 
-                                if (pwd == null || pwd.Length < 7)
+                                if (pwd.Length < 7)
                                 {
                                     Log.Error("A senha não pode estar em branco ou ser menor que 8 caracteres. Favor tentar novamente...");
                                 }
                                 else senha = true;
 
                             } while (!senha);
-                        }
-                        else if (user == null)
-                        {
-                            wc.WebCrawler("https://www.imdb.com/chart/top/?ref_=nv_mv_250");
-                            return;
                         }
                         else
                         {
@@ -71,14 +67,22 @@ namespace WebCrawlerIMDB.Controller
                     sucess = AutoLogin(user, pwd);
 
                 } while (!sucess);
-
-                wc.WebCrawler("https://www.imdb.com/list/ratings/?ref_=nv_usr_rt_4");
             }
+
+            else AutoLogin(user, pwd);
+
+            wc.WebCrawler("https://www.imdb.com/list/ratings/?ref_=nv_usr_rt_4");
         }
 
+        /// <summary>
+        /// Método que automatiza o login.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
         private bool AutoLogin(string user, string pwd)
         {
-            WebDriver driver = wb.GetDriver();
+            driver = BrowserDriver.GetDriver();
             try
             {
                 Log.Debug("Carregando página de Login...");
@@ -96,7 +100,7 @@ namespace WebCrawlerIMDB.Controller
                 driver.FindElement(By.Id("signInSubmit")).Click();
                 Log.Debug("Tentando Logar...");
 
-                // Detecta se houve erro no login e passa a mensagem de erro da página diretamente para o usuário
+                // Detecta se houve erro no login e passa a mensagem de erro da página diretamente para o usuário                
                 if (wb.ElementAre(By.Id("auth-error-message-box")))
                 {
                     Log.Error("Falha ao Tentar Logar! \n" + driver.FindElement(By.ClassName("a-list-item")).Text);
@@ -114,19 +118,25 @@ namespace WebCrawlerIMDB.Controller
                     if (response == ConsoleKey.S || response == ConsoleKey.Y) return false;
                     else Environment.Exit(0);
                 }
-                Screenshot ss = ((ITakesScreenshot)driver).GetScreenshot();
-                ss.SaveAsFile("Image.png");
 
-                // Verifica se o o meu de usuário existe, existindo, é um ótimo sinal que o login foi feito :)
-
+                // Verifica se o o menu de usuário existe, existindo, é um ótimo sinal que o login foi feito :)
                 if (wb.ElementAre(By.ClassName("nav__userMenu")))
                 {
                     Log.Information("Login efetuado com sucesso!");
                     return true;
                 }
 
-                Console.WriteLine("Login incorreto por repetidas vezes." +
-                    "\nFavor verifique se o usuário está correto ou tente outro usuário");
+                // Após repetidas tentativas incorretas de login com o mesmo usuário,
+                // a página irá pedir captcha para seguir com o login. 
+                if (wb.ElementAre(By.ClassName("cvf-captcha-img")))
+                {
+                    Log.Error("Login incorreto por repetidas vezes." +
+                        "\nFavor verifique se o usuário está correto ou tente outro usuário");
+                    return false;
+                }
+
+                Log.Error("Login não efetuado por motivo desconhecido." +
+                        "\nFavor verifique se o usuário está correto ou tente outro usuário");
                 return false;
             }
             catch (Exception e)

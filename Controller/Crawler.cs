@@ -1,17 +1,15 @@
-﻿using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using WebCrawlerIMDB.Model;
 using Serilog;
 using System.Text;
 using ServiceStack.Text;
-using System.IO;
 
 namespace WebCrawlerIMDB.Controller
 {
     public class Crawler
     {
         BrowserDriver wb = new BrowserDriver();
-
+        private IWebDriver driver;
         /// <summary>
         /// Método que extrai os dados dos 20 filmes mais bem avaliados da lista especificada no link.
         /// </summary>
@@ -21,7 +19,7 @@ namespace WebCrawlerIMDB.Controller
             // Lista com os itens que serão extraídos de cada filme. Especificado na classe MovieItems.cs em Models.
             var movieItems = new List<MovieItems>();
 
-            WebDriver driver = wb.GetDriver();
+            driver = BrowserDriver.GetDriver();
 
             var header = new MovieItems
             {
@@ -48,15 +46,16 @@ namespace WebCrawlerIMDB.Controller
             driver.Navigate().GoToUrl(link);
             Log.Information("Página carregada!");
 
-            if (link.Contains("user") || !wb.ElementAre(By.ClassName("ipc-title__text")))
+            if (link.Contains("user") && !wb.ElementAre(By.ClassName("ipc-title__text")))
             {
                 Log.Error("Usuário sem avaliaçoes. Favor selecionar outro usuário.");
-                return;
+                
             }
 
-            // Procura e clica no botão que altera a lista para uma visão detalhada, mostrando mais informações sem precisar abrir o link de cada filme
+            // Procura e clica no botão que altera a lista para uma visão detalhada, mostrando mais informações sem precisar abrir o link de cada filme            
             driver.FindElement(By.Id("list-view-option-detailed")).Click();
             Log.Debug("Exibição alterada para lista detalhada.");
+            
 
             // Filtro feito pela classe dos itens presentes na lista requerida
             var movieElements = driver.FindElements(By.ClassName("ipc-metadata-list-summary-item"));
